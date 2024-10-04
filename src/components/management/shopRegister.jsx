@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Client, Account, Databases } from 'appwrite';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const client = new Client();
 client
   .setEndpoint('https://cloud.appwrite.io/v1') 
   .setProject('66ff95bf000233c21275');
 
-const Institute_login = () => {
+const Shop_login = () => {
+  const navigate = useNavigate();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [shopName, setShopName] = useState('');
@@ -26,10 +28,8 @@ const Institute_login = () => {
 
   const handleSignUp = async () => {
     try {
-      
       const user = await account.create('unique()', email, password);
       
-    
       await databases.createDocument(
         '66ffd48c001fcd335086', 
         '66ffede70020edab97d4', 
@@ -50,6 +50,7 @@ const Institute_login = () => {
       );
 
       alert('Sign up successful!');
+      navigate('/shopkeeper-login');
     } catch (error) {
       console.error('Error during sign up:', error);
       alert('Sign up failed: ' + error.message);
@@ -58,135 +59,113 @@ const Institute_login = () => {
 
   return (
     <>
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="mx-auto max-w-[432px] bg-white rounded-md shadow-lg drop-shadow-md">
-          <div className="px-4 py-3">
-            <h2 className="text-center text-lg font-bold">Institute Sign Up</h2>
-          </div>
-          <hr className="bg-gray-600" />
-          <div className="px-4 pt-3 pb-6 space-y-3">
-            <div className="space-x-3 flex">
+      <div className="flex items-center justify-center min-h-screen bg-gray-900">
+        <div className="mx-auto max-w-lg bg-gray-800 rounded-lg shadow-lg p-6 md:p-10">
+          <h2 className="text-center text-2xl font-bold text-white mb-6">Shop Sign Up</h2>
+          <div className="space-y-4">
+            <div className="flex space-x-3">
               <input
                 type="text"
                 placeholder="First Name"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className="w-full ring-1 ring-gray-400 rounded-md text-md px-2 py-2 outline-none bg-gray-100 focus:placeholder-gray-500"
+                className="w-full ring-1 ring-gray-600 rounded-md text-md px-4 py-3 outline-none bg-gray-700 text-white placeholder-gray-400 focus:ring-gray-400"
               />
               <input
                 type="text"
                 placeholder="Last Name"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className="w-full ring-1 ring-gray-400 rounded-md text-md px-2 py-2 outline-none bg-gray-100 focus:placeholder-gray-500"
+                className="w-full ring-1 ring-gray-600 rounded-md text-md px-4 py-3 outline-none bg-gray-700 text-white placeholder-gray-400 focus:ring-gray-400"
               />
             </div>
-            <div>
-              <input
-                type="text"
-                placeholder="Shop Name"
-                value={shopName}
-                onChange={(e) => setShopName(e.target.value)}
-                className="w-full ring-1 ring-gray-400 rounded-md text-md px-2 py-2 outline-none bg-gray-100 focus:placeholder-gray-500"
-              />
-            </div>
-            <div>
-              <input
-                type="text"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full ring-1 ring-gray-400 rounded-md text-md px-2 py-2 outline-none bg-gray-100 focus:placeholder-gray-500"
-              />
-            </div>
-            <div>
-              <input
-                type="text"
-                placeholder="Mobile Number"
-                value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
-                className="w-full ring-1 ring-gray-400 rounded-md text-md px-2 py-2 outline-none bg-gray-100 focus:placeholder-gray-500"
-              />
-            </div>
-            <div>
-              <input
-                type="text"
-                placeholder="GSTIN NO"
-                value={gstin}
-                onChange={(e) => setGstin(e.target.value)}
-                className="w-full ring-1 ring-gray-400 rounded-md text-md px-2 py-2 outline-none bg-gray-100 focus:placeholder-gray-500"
-              />
-            </div>
-            <div>
-              <input
-                type="text"
-                placeholder="Address"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                className="w-full ring-1 ring-gray-400 rounded-md text-md px-2 py-2 outline-none bg-gray-100 focus:placeholder-gray-500"
-              />
-            </div>
-            <div>
-              <input
-                type="text"
-                placeholder="Street Name"
-                value={streetName}
-                onChange={(e) => setStreetName(e.target.value)}
-                className="w-full ring-1 ring-gray-400 rounded-md text-md px-2 py-2 outline-none bg-gray-100 focus:placeholder-gray-500"
-              />
-            </div>
-            <div className="space-x-3 flex">
+            <input
+              type="text"
+              placeholder="Shop Name"
+              value={shopName}
+              onChange={(e) => setShopName(e.target.value)}
+              className="w-full ring-1 ring-gray-600 rounded-md text-md px-4 py-3 outline-none bg-gray-700 text-white placeholder-gray-400 focus:ring-gray-400"
+            />
+            <input
+              type="text"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full ring-1 ring-gray-600 rounded-md text-md px-4 py-3 outline-none bg-gray-700 text-white placeholder-gray-400 focus:ring-gray-400"
+            />
+            <input
+              type="text"
+              placeholder="Mobile Number"
+              value={mobile}
+              onChange={(e) => setMobile(e.target.value)}
+              className="w-full ring-1 ring-gray-600 rounded-md text-md px-4 py-3 outline-none bg-gray-700 text-white placeholder-gray-400 focus:ring-gray-400"
+            />
+            <input
+              type="text"
+              placeholder="GSTIN NO"
+              value={gstin}
+              onChange={(e) => setGstin(e.target.value)}
+              className="w-full ring-1 ring-gray-600 rounded-md text-md px-4 py-3 outline-none bg-gray-700 text-white placeholder-gray-400 focus:ring-gray-400"
+            />
+            <input
+              type="text"
+              placeholder="Address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="w-full ring-1 ring-gray-600 rounded-md text-md px-4 py-3 outline-none bg-gray-700 text-white placeholder-gray-400 focus:ring-gray-400"
+            />
+            <input
+              type="text"
+              placeholder="Street Name"
+              value={streetName}
+              onChange={(e) => setStreetName(e.target.value)}
+              className="w-full ring-1 ring-gray-600 rounded-md text-md px-4 py-3 outline-none bg-gray-700 text-white placeholder-gray-400 focus:ring-gray-400"
+            />
+            <div className="flex space-x-3">
               <input
                 type="text"
                 placeholder="City"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                className="w-full ring-1 ring-gray-400 rounded-md text-md px-2 py-2 outline-none bg-gray-100 focus:placeholder-gray-500"
+                className="w-full ring-1 ring-gray-600 rounded-md text-md px-4 py-3 outline-none bg-gray-700 text-white placeholder-gray-400 focus:ring-gray-400"
               />
               <input
                 type="text"
                 placeholder="State"
                 value={state}
                 onChange={(e) => setState(e.target.value)}
-                className="w-full ring-1 ring-gray-400 rounded-md text-md px-2 py-2 outline-none bg-gray-100 focus:placeholder-gray-500"
+                className="w-full ring-1 ring-gray-600 rounded-md text-md px-4 py-3 outline-none bg-gray-700 text-white placeholder-gray-400 focus:ring-gray-400"
               />
             </div>
-            <div>
-              <input
-                type="text"
-                placeholder="Pincode"
-                value={pincode}
-                onChange={(e) => setPincode(e.target.value)}
-                className="w-full ring-1 ring-gray-400 rounded-md text-md px-2 py-2 outline-none bg-gray-100 focus:placeholder-gray-500"
-              />
+            <input
+              type="text"
+              placeholder="Pincode"
+              value={pincode}
+              onChange={(e) => setPincode(e.target.value)}
+              className="w-full ring-1 ring-gray-600 rounded-md text-md px-4 py-3 outline-none bg-gray-700 text-white placeholder-gray-400 focus:ring-gray-400"
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full ring-1 ring-gray-600 rounded-md text-md px-4 py-3 outline-none bg-gray-700 text-white placeholder-gray-400 focus:ring-gray-400"
+            />
+            <div className="text-gray-400 text-sm">
+              People who use our service may have uploaded your contact information to Facebook.
+              <a href="#" className="text-blue-400 hover:underline">Learn more</a>.
             </div>
-            <div>
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full ring-1 ring-gray-400 rounded-md text-md px-2 py-2 outline-none bg-gray-100 focus:placeholder-gray-500"
-              />
-            </div>
-            <div>
-              <p className="text-gray-600" style={{ fontSize: '11px' }}>
-                People who use our service may have uploaded your contact information to Facebook.
-                <a href="#" className="hover:text-blue-900 font-medium hover:underline">Learn more</a>.
-              </p>
-              <p className="text-gray-600 mt-4" style={{ fontSize: '11px' }}>
-                By clicking Sign Up, you agree to our
-                <a href="#" className="hover:text-blue-900 font-medium hover:underline">Terms</a>,
-                <a href="#" className="hover:text-blue-900 font-medium hover:underline">Privacy Policy</a>
-                and
-                <a href="#" className="hover:text-blue-900 font-medium hover:underline">Cookies Policy</a>.
-                You may receive SMS notifications from us and can opt out at any time.
-              </p>
+            <div className="text-gray-400 text-sm">
+              By clicking Sign Up, you agree to our
+              <a href="#" className="text-blue-400 hover:underline">Terms</a>,
+              <a href="#" className="text-blue-400 hover:underline">Privacy Policy</a>
+              and
+              <a href="#" className="text-blue-400 hover:underline">Cookies Policy</a>.
+              You may receive SMS notifications from us and can opt out at any time.
             </div>
             <div className="text-center">
               <button
-                className="text-white font-bold px-16 py-1 rounded-md"
-                style={{ backgroundColor: '#00A400', fontSize: '18px' }}
+                className="bg-green-600 text-white font-bold px-8 py-2 rounded-md hover:bg-green-700 transition duration-300"
                 onClick={handleSignUp}
               >
                 Sign Up
@@ -195,7 +174,7 @@ const Institute_login = () => {
             <div className="text-center mt-4">
               <Link to="/register">
                 <button
-                  className="text-gray-600 font-bold px-16 py-1 rounded-md border border-gray-400"
+                  className="text-gray-300 font-bold px-8 py-2 rounded-md border border-gray-600 hover:bg-gray-700 transition duration-300"
                 >
                   Go Back
                 </button>
@@ -208,4 +187,4 @@ const Institute_login = () => {
   );
 };
 
-export default Institute_login
+export default Shop_login;

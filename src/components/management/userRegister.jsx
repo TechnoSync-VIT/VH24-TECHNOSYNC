@@ -1,22 +1,25 @@
 import React, { useState } from 'react';
 import { Client, Account, Databases } from 'appwrite';
-import { Link } from 'react-router-dom'; 
+import { Link, useNavigate } from 'react-router-dom';
 
 const client = new Client();
 client
   .setEndpoint('https://cloud.appwrite.io/v1') 
-  .setProject('66ff95bf000233c21275'); 
-
+  .setProject('66ff95bf000233c21275');
 const DonorLogin = () => {
+  
   const [firstName, setFirstName] = useState('');
   const [surname, setSurname] = useState('');
   const [mobile, setMobile] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [gender, setGender] = useState('');
+  const [otp, setOtp] = useState(''); // State for OTP
+  const [showOtpPopup, setShowOtpPopup] = useState(false); // State to control OTP popup
 
   const account = new Account(client);
   const databases = new Databases(client);
+  const navigate = useNavigate(); // Use useNavigate instead of useHistory
 
   const handleSignUp = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -40,37 +43,50 @@ const DonorLogin = () => {
         }
       );
 
-      alert('Sign up successful!');
+      alert('Sign up successful! A verification OTP has been sent to your email.');
+      navigate('/user-login');
+      // setShowOtpPopup(true); // Show OTP popup
+      // navigate('/user-login')
+      
     } catch (error) {
       console.error('Error during sign up:', error);
       alert('Sign up failed: ' + error.message);
     }
   };
 
-  const handleBack = () => {
-    history.goBack(); 
+  const handleVerifyOtp = async () => {
+    // Add your OTP verification logic here
+    const isVerified = await verifyOtp(otp); // Assume this function verifies the OTP
+    if (isVerified) {
+      alert('OTP verified successfully!');
+      navigate('/home'); // Redirect to home page
+    } else {
+      alert('Invalid OTP, please try again.');
+    }
   };
 
-
+  const handleBack = () => {
+    navigate(-1); // Go back to the previous page
+  };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="mx-auto max-w-sm bg-white rounded-md shadow-lg p-6">
-        <div className="space-y-4">
+    <div className="flex items-center justify-center min-h-screen bg-gray-900">
+      <div className="mx-auto max-w-lg bg-gray-800 rounded-lg shadow-lg p-8 md:p-10">
+        <div className="space-y-6">
           <div className="flex space-x-3">
             <input
               type="text"
               placeholder="First name"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className="w-full ring-1 ring-gray-400 rounded-md text-md px-2 py-2 outline-none bg-gray-100 focus:placeholder-gray-500"
+              className="w-full ring-1 ring-gray-600 rounded-md text-md px-4 py-3 outline-none bg-gray-700 text-white placeholder-gray-400 focus:ring-gray-400"
             />
             <input
               type="text"
               placeholder="Surname"
               value={surname}
               onChange={(e) => setSurname(e.target.value)}
-              className="w-full ring-1 ring-gray-400 rounded-md text-md px-2 py-2 outline-none bg-gray-100 focus:placeholder-gray-500"
+              className="w-full ring-1 ring-gray-600 rounded-md text-md px-4 py-3 outline-none bg-gray-700 text-white placeholder-gray-400 focus:ring-gray-400"
             />
           </div>
           <input
@@ -78,57 +94,58 @@ const DonorLogin = () => {
             placeholder="Mobile number"
             value={mobile}
             onChange={(e) => setMobile(e.target.value)}
-            className="w-full ring-1 ring-gray-400 rounded-md text-md px-2 py-2 outline-none bg-gray-100 focus:placeholder-gray-500"
+            className="w-full ring-1 ring-gray-600 rounded-md text-md px-4 py-3 outline-none bg-gray-700 text-white placeholder-gray-400 focus:ring-gray-400"
           />
           <input
             type="text"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full ring-1 ring-gray-400 rounded-md text-md px-2 py-2 outline-none bg-gray-100 focus:placeholder-gray-500"
+            className="w-full ring-1 ring-gray-600 rounded-md text-md px-4 py-3 outline-none bg-gray-700 text-white placeholder-gray-400 focus:ring-gray-400"
           />
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full ring-1 ring-gray-400 rounded-md text-md px-2 py-2 outline-none bg-gray-100 focus:placeholder-gray-500"
+            className="w-full ring-1 ring-gray-600 rounded-md text-md px-4 py-3 outline-none bg-gray-700 text-white placeholder-gray-400 focus:ring-gray-400"
           />
           <div>
-            <div className="text-gray-500 text-sm">
+            <div className="text-gray-400 text-sm">
               Gender <a href=""> (?) </a>
             </div>
             <div className="mt-1 flex space-x-3">
               {['Female', 'Male', 'Other'].map((genderOption) => (
-                <label key={genderOption} className="flex-1 flex space-x-2 justify-between items-center rounded-md px-2 py-1 border border-gray-400">
-                  <span>{genderOption}</span>
+                <label key={genderOption} className="flex-1 flex space-x-2 justify-between items-center rounded-md px-2 py-1 border border-gray-600 bg-gray-700">
+                  <span className="text-white">{genderOption}</span>
                   <input
                     type="radio"
                     name="gender"
                     value={genderOption}
                     onChange={(e) => setGender(e.target.value)}
+                    className="text-gray-600"
                   />
                 </label>
               ))}
             </div>
           </div>
           <div>
-            <p className="text-gray-600 text-xs">
+            <p className="text-gray-400 text-xs">
               People who use our service may have uploaded your contact information to Facebook.
-              <a href="" className="hover:text-blue-900 font-medium hover:underline">Learn more</a>.
+              <a href="" className="hover:text-blue-400 font-medium hover:underline">Learn more</a>.
             </p>
-            <p className="text-gray-600 text-xs mt-4">
+            <p className="text-gray-400 text-xs mt-4">
               By clicking Sign Up, you agree to our
-              <a href="" className="hover:text-blue-900 font-medium hover:underline">Terms</a>,
-              <a href="" className="hover:text-blue-900 font-medium hover:underline">Privacy Policy</a>
+              <a href="" className="hover:text-blue-400 font-medium hover:underline">Terms</a>,
+              <a href="" className="hover:text-blue-400 font-medium hover:underline">Privacy Policy</a>
               and
-              <a href="" className="hover:text-blue-900 font-medium hover:underline">Cookies Policy</a>.
+              <a href="" className="hover:text-blue-400 font-medium hover:underline">Cookies Policy</a>.
               You may receive SMS notifications from us and can opt out at any time.
             </p>
           </div>
           <div className="text-center">
             <button
-              className="text-white font-bold px-16 py-1 rounded-md"
+              className="text-white font-bold px-8 py-2 rounded-md"
               style={{ backgroundColor: '#00A400', fontSize: '18px' }}
               onClick={handleSignUp}
             >
@@ -137,16 +154,46 @@ const DonorLogin = () => {
           </div>
           <div className="text-center mt-4">
             <Link to="/register">
-            <button
-              className="text-gray-600 font-bold px-16 py-1 rounded-md border border-gray-400"
-              onClick={handleBack}
-            >
-              Go Back
-            </button></Link>
+              <button
+                className="text-gray-300 font-bold px-8 py-2 rounded-md border border-gray-600 hover:bg-gray-700"
+                onClick={handleBack}
+              >
+                Go Back
+              </button>
+            </Link>
           </div>
-          
         </div>
       </div>
+
+      {/* OTP Popup */}
+      {showOtpPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 w-80">
+            <h2 className="text-lg font-bold mb-4">OTP Verification</h2>
+            <input
+              type="text"
+              placeholder="Enter OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              className="w-full border border-gray-300 rounded-md p-2 mb-4"
+            />
+            <div className="flex justify-between">
+              <button
+                onClick={handleVerifyOtp}
+                className="bg-green-500 text-white rounded-md px-4 py-2"
+              >
+                Verify
+              </button>
+              <button
+                onClick={() => setShowOtpPopup(false)} // Close OTP popup
+                className="bg-red-500 text-white rounded-md px-4 py-2"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
