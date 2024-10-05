@@ -22,35 +22,52 @@ const Shop_login = () => {
   const [state, setState] = useState('');
   const [pincode, setPincode] = useState('');
   const [password, setPassword] = useState('');
+  const [gstinApi, setGstinApi] = useState('');
 
   const account = new Account(client);
   const databases = new Databases(client);
 
   const handleSignUp = async () => {
     try {
-      const user = await account.create('unique()', email, password);
-      
-      await databases.createDocument(
-        '66ffd48c001fcd335086', 
-        '66ffede70020edab97d4', 
-        user.$id, 
-        {
-          firstName,
-          lastName,
-          shopName,
-          email,
-          mobile,
-          gstin,
-          address,
-          streetName,
-          city,
-          pincode,
-          state,
-        }
-      );
 
-      alert('Sign up successful!');
-      navigate('/shopkeeper-login');
+      const apiKey = "8a5c7f9118e2386d422e215676345b28";
+      const gst = "27CEPPV9417P1Z7"
+
+
+
+      fetch(`http://sheet.gstincheck.co.in/check-return/${apiKey}/${gstinApi}`).then((res) => res.json()).then((res) => setGstinApi(res)
+      ).catch((err) => console.log(err)
+      )
+
+      console.log(gstinApi.data);
+
+      if (!gstinApi.flag ) {
+       const user = await account.create('unique()', email, password);
+        
+        await databases.createDocument(
+          '66ffd48c001fcd335086', 
+          '66ffede70020edab97d4', 
+          user.$id, 
+          {
+            firstName,
+            lastName,
+            shopName,
+            email,
+            mobile,
+            gstin,
+            address,
+            streetName,
+            city,
+            pincode,
+            state,
+          }
+        );
+        alert('Sign up successful!');
+        navigate('/shopkeeper-login');
+      } else {
+        alert("Invalid GSTIN number")
+      }
+
     } catch (error) {
       console.error('Error during sign up:', error);
       alert('Sign up failed: ' + error.message);

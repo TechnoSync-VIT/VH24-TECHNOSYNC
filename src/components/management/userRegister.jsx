@@ -6,72 +6,61 @@ const client = new Client();
 client
   .setEndpoint('https://cloud.appwrite.io/v1') 
   .setProject('66ff95bf000233c21275');
+
 const DonorLogin = () => {
-  
   const [firstName, setFirstName] = useState('');
   const [surname, setSurname] = useState('');
   const [mobile, setMobile] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [gender, setGender] = useState('');
-  const [otp, setOtp] = useState(''); // State for OTP
-  const [showOtpPopup, setShowOtpPopup] = useState(false); // State to control OTP popup
+  // const [otp, setOtp] = useState('');
+  // const [showOtpPopup, setShowOtpPopup] = useState(false);
+  // const [error, setError] = useState('');
 
   const account = new Account(client);
   const databases = new Databases(client);
-  const navigate = useNavigate(); // Use useNavigate instead of useHistory
+  const navigate = useNavigate();
 
   const handleSignUp = async () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
-    if (!email || !emailRegex.test(email)) {
-      alert('Please enter a valid email address.');
-      return;
-    }
-  
+   
     try {
       const user = await account.create('unique()', email, password);
       await databases.createDocument(
-        '66ffd48c001fcd335086', 
-        '66ffe375001d8664c2b2', 
-        user.$id, 
-        {
-          firstName,
-          surname,
-          mobile,
-          gender,
-        }
+        '66ffd48c001fcd335086',
+        '66ffe375001d8664c2b2',
+        user.$id,
+        { firstName, surname, mobile, gender, email }
       );
 
       alert('Sign up successful! A verification OTP has been sent to your email.');
-      navigate('/user-login');
-      // setShowOtpPopup(true); // Show OTP popup
-      // navigate('/user-login')
-      
+      navigate('/user-login')
+      // setShowOtpPopup(true); // Show OTP popup after successful sign-up
     } catch (error) {
       console.error('Error during sign up:', error);
-      alert('Sign up failed: ' + error.message);
+      setError('Sign up failed: ' + error.message);
     }
   };
 
   const handleVerifyOtp = async () => {
-    // Add your OTP verification logic here
-    const isVerified = await verifyOtp(otp); // Assume this function verifies the OTP
-    if (isVerified) {
-      alert('OTP verified successfully!');
-      navigate('/home'); // Redirect to home page
-    } else {
-      alert('Invalid OTP, please try again.');
-    }
+    // Placeholder for OTP verification logic
+    // const isVerified = await verifyOtp(otp); // Assume this function verifies the OTP
+    // if (isVerified) {
+    //   alert('OTP verified successfully!');
+    //   navigate('/home'); // Redirect to home page
+    // } else {
+    //   alert('Invalid OTP, please try again.');
+    // }
   };
 
-  const handleBack = () => {
-    navigate(-1); // Go back to the previous page
-  };
+  // const handleBack = () => {
+  //   navigate('/register');
+  // };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900">
       <div className="mx-auto max-w-lg bg-gray-800 rounded-lg shadow-lg p-8 md:p-10">
+        {/* {error && <div className="text-red-500">{error}</div>} */}
         <div className="space-y-6">
           <div className="flex space-x-3">
             <input
@@ -111,9 +100,7 @@ const DonorLogin = () => {
             className="w-full ring-1 ring-gray-600 rounded-md text-md px-4 py-3 outline-none bg-gray-700 text-white placeholder-gray-400 focus:ring-gray-400"
           />
           <div>
-            <div className="text-gray-400 text-sm">
-              Gender <a href=""> (?) </a>
-            </div>
+            <div className="text-gray-400 text-sm">Gender</div>
             <div className="mt-1 flex space-x-3">
               {['Female', 'Male', 'Other'].map((genderOption) => (
                 <label key={genderOption} className="flex-1 flex space-x-2 justify-between items-center rounded-md px-2 py-1 border border-gray-600 bg-gray-700">
@@ -129,20 +116,6 @@ const DonorLogin = () => {
               ))}
             </div>
           </div>
-          <div>
-            <p className="text-gray-400 text-xs">
-              People who use our service may have uploaded your contact information to Facebook.
-              <a href="" className="hover:text-blue-400 font-medium hover:underline">Learn more</a>.
-            </p>
-            <p className="text-gray-400 text-xs mt-4">
-              By clicking Sign Up, you agree to our
-              <a href="" className="hover:text-blue-400 font-medium hover:underline">Terms</a>,
-              <a href="" className="hover:text-blue-400 font-medium hover:underline">Privacy Policy</a>
-              and
-              <a href="" className="hover:text-blue-400 font-medium hover:underline">Cookies Policy</a>.
-              You may receive SMS notifications from us and can opt out at any time.
-            </p>
-          </div>
           <div className="text-center">
             <button
               className="text-white font-bold px-8 py-2 rounded-md"
@@ -156,7 +129,7 @@ const DonorLogin = () => {
             <Link to="/register">
               <button
                 className="text-gray-300 font-bold px-8 py-2 rounded-md border border-gray-600 hover:bg-gray-700"
-                onClick={handleBack}
+               
               >
                 Go Back
               </button>
@@ -166,7 +139,7 @@ const DonorLogin = () => {
       </div>
 
       {/* OTP Popup */}
-      {showOtpPopup && (
+      {/* {showOtpPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg p-6 w-80">
             <h2 className="text-lg font-bold mb-4">OTP Verification</h2>
@@ -193,7 +166,7 @@ const DonorLogin = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

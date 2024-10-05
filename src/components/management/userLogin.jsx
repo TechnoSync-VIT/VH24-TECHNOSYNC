@@ -8,34 +8,43 @@ const UserLogin = () => {
   const account = new Account(client);
 
   client
-    .setEndpoint('https://cloud.appwrite.io/v1') 
+    .setEndpoint('https://cloud.appwrite.io/v1')
     .setProject('66ff95bf000233c21275');
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const checkSession = async () => {
       try {
         await account.get(); // Check if the user is logged in
-        navigate('/user-home'); // Redirect to home page if already logged in
+        setIsLoggedIn(true); // Set the logged-in state
       } catch (err) {
         // No active session, do nothing
+        setIsLoggedIn(false);
       }
     };
 
     checkSession();
-  }, [account, navigate]);
+  }, [account]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
+    
+    if (isLoggedIn) {
+      // If user is already logged in, redirect to home
+      navigate('/user-home');
+      return;
+    }
+
     try {
       await account.createEmailPasswordSession(email, password);
-      navigate('/user-home'); // Redirect to home page
-    } catch (err) {
-      setError(err.message);
+      navigate('/user-home'); // Redirect to home page after successful login
+    } catch (loginError) {
+      setError(loginError.message);
     }
   };
 
@@ -93,7 +102,6 @@ const UserLogin = () => {
             <Link to="/register">
               <button
                 className="text-gray-300 font-bold px-8 py-2 rounded-md border border-gray-600 hover:bg-gray-700"
-               
               >
                 Go Back
               </button>
